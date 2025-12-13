@@ -1,0 +1,40 @@
+---
+- name: Configure Syslog on All Network Devices
+  hosts: cisco
+  gather_facts: no
+
+  vars:
+    syslog_server: 35.153.179.160
+    syslog_port: 514
+
+  tasks:
+
+    - name: Enable timestamps for syslog messages
+      ios_config:
+        lines:
+          - service timestamps log datetime msec localtime show-timezone
+
+    - name: Set syslog source interface (Switches)
+      ios_config:
+        lines:
+          - logging source-interface Vlan99
+      when: inventory_hostname in ['D1', 'D2', 'A1']
+
+    - name: Set syslog source interface (R1 and R3)
+      ios_config:
+        lines:
+          - logging source-interface GigabitEthernet0/0/1
+      when: inventory_hostname in ['R1', 'R3']
+
+    - name: Set syslog source interface (R2 ISP router)
+      ios_config:
+        lines:
+          - logging source-interface GigabitEthernet0/0/0
+      when: inventory_hostname == 'R2'
+
+    - name: Configure remote syslog server (AWS EC2)
+      ios_config:
+        lines:
+          - logging host {{ syslog_server }} transport udp port {{ syslog_port }}
+          - logging trap informational
+          - logging buffered 16384 informational
