@@ -1,0 +1,76 @@
+---
+- name: Routing Verification (OSPF + BGP)
+  hosts: cisco
+  gather_facts: no
+
+  tasks:
+
+    - name: Show IPv4 OSPF learned routes
+      ios_command:
+        commands:
+          - show ip route ospf
+      when: inventory_hostname != 'A1'
+      register: ospf_ipv4
+
+    - name: Show IPv6 OSPF learned routes
+      ios_command:
+        commands:
+          - show ipv6 route ospf
+      when: inventory_hostname != 'A1'
+      register: ospf_ipv6
+
+    - name: Show IPv6 OSPF neighbors
+      ios_command:
+        commands:
+          - show ipv6 ospf neighbor
+      when: inventory_hostname != 'A1'
+      register: ospf6_neighbors
+
+    - name: Show BGP summary (routers only)
+      ios_command:
+        commands:
+          - show ip bgp summary
+      when: "'routers' in group_names"
+      register: bgp_summary
+
+    - name: Show BGP-learned routes (routers only)
+      ios_command:
+        commands:
+          - show ip route bgp
+      when: "'routers' in group_names"
+      register: bgp_routes
+
+    - name: Display IPv4 OSPF routes
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} IPv4 OSPF Routes ====="
+          - "{{ ospf_ipv4.stdout_lines }}"
+      when: ospf_ipv4 is defined
+
+    - name: Display IPv6 OSPF routes
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} IPv6 OSPF Routes ====="
+          - "{{ ospf_ipv6.stdout_lines }}"
+      when: ospf_ipv6 is defined
+
+    - name: Display IPv6 OSPF neighbors
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} IPv6 OSPF Neighbors ====="
+          - "{{ ospf6_neighbors.stdout_lines }}"
+      when: ospf6_neighbors is defined
+
+    - name: Display BGP summary
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} BGP Summary ====="
+          - "{{ bgp_summary.stdout_lines }}"
+      when: bgp_summary is defined
+
+    - name: Display BGP routes
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} BGP Routes ====="
+          - "{{ bgp_routes.stdout_lines }}"
+      when: bgp_routes is defined

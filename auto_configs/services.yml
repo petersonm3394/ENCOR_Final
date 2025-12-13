@@ -1,0 +1,34 @@
+---
+- name: Configure Basic Network Services
+  hosts: cisco
+  gather_facts: no
+
+  vars:
+    ntp_servers:
+      - time.google.com
+      - time.cloudflare.com
+    timezone: UTC
+
+  tasks:
+
+    - name: Configure NTP servers
+      ios_config:
+        match: line
+        lines: "{{ ntp_servers | map('regex_replace', '^(.*)$', 'ntp server \\1') | list }}"
+
+    - name: Configure timezone
+      ios_config:
+        lines:
+          - "clock timezone {{ timezone }} 0"
+
+    - name: Configure MOTD banner
+      ios_config:
+        lines:
+          - |
+            banner motd ^
+            ****************************************************
+            *  Authorized Access Only                          *
+            *  CNIT 441 – Enterprise Network Project            *
+            *  All activity is monitored and logged             *
+            ****************************************************
+            ^

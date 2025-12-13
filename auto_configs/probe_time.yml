@@ -1,0 +1,66 @@
+---
+- name: Configure IP SLA & Object Tracking for HSRP Failover
+  hosts: switches
+  gather_facts: no
+
+  vars:
+    sla_id: 1
+    track_id: 1
+    sla_target: 21.25.67.69
+
+  tasks:
+
+    - name: Run only on D1 and D2
+      meta: end_host
+      when: inventory_hostname not in ['D1', 'D2']
+
+    - name: Configure IP SLA ICMP echo
+      ios_config:
+        lines:
+          - ip sla {{ sla_id }}
+          - icmp-echo {{ sla_target }}
+          - frequency 5
+          - ip sla schedule {{ sla_id }} life forever start-time now
+
+    - name: Configure tracking object
+      ios_config:
+        lines:
+          - track {{ track_id }} ip sla {{ sla_id }} reachability
+
+    - name: Apply tracking to HSRP VLAN 67
+      ios_config:
+        parents:
+          - interface Vlan67
+        lines:
+          - standby 67 track {{ track_id }} decrement 30
+
+    - name: Apply tracking to HSRP VLAN 69
+      ios_config:
+        parents:
+          - interface Vlan69
+        lines:
+          - standby 69 track {{ track_id }} decrement 30
+
+    - name: Verify IP SLA status
+      ios_command:
+        commands:
+          - show ip sla statistics
+      register: sla_status
+
+    - name: Verify tracking status
+      ios_command:
+        commands:
+          - show track
+      register: track_status
+
+    - name: Display IP SLA results
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} IP SLA ====="
+          - "{{ sla_status.stdout_lines }}"
+
+    - name: Display Tracking results
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} Tracking ====="
+          - "{{ track_status.stdout_lines }}"

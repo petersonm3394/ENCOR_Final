@@ -1,0 +1,31 @@
+---
+- name: Connectivity & Failover Ping Tests 
+  hosts: cisco
+  gather_facts: no
+
+  vars:
+    ping_targets:
+      - name: VLAN67 Gateway
+        ip: 192.168.67.254
+      - name: VLAN69 Gateway
+        ip: 192.168.69.254
+      - name: ISP Loopback
+        ip: 21.25.67.69
+
+  tasks:
+
+    - name: Run ping tests from distribution switches only
+      ios_command:
+        commands:
+          - ping {{ item.ip }} repeat 15
+      loop: "{{ ping_targets }}"
+      register: ping_results
+      ignore_errors: yes
+
+    - name: Display ping results
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} → {{ item.item.name }} ====="
+          - "{{ item.stdout }}"
+      loop: "{{ ping_results.results }}"
+      when: ping_results is defined

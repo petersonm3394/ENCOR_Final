@@ -84,11 +84,10 @@
           - "===== {{ inventory_hostname }} DHCP Bindings ====="
           - "{{ dhcp_bindings.stdout_lines }}"
       when: dhcp_bindings is defined
-    - name: Show SNMP configuration (routers only)
+    - name: Show SNMP configuration 
       ios_command:
         commands:
           - show snmp
-      when: "'routers' in group_names"
       register: snmp_info
 
     - name: Display SNMP configuration
@@ -98,11 +97,10 @@
           - "{{ snmp_info.stdout_lines }}"
       when: snmp_info is defined
 
-    - name: Show SNMP hosts (routers only)
+    - name: Show SNMP hosts 
       ios_command:
         commands:
           - show snmp host
-      when: "'routers' in group_names"
       register: snmp_hosts
 
     - name: Display SNMP hosts
