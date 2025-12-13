@@ -1,0 +1,48 @@
+---
+- name: Configure HSRPv2 on Distribution Switches
+  hosts: switches
+  gather_facts: no
+
+  vars:
+    hsrp_vlans:
+      - vlan: 67
+        vip: 192.168.67.254
+        group6: 167
+      - vlan: 69
+        vip: 192.168.69.254
+        group6: 169
+
+  tasks:
+
+    - name: Skip non-distribution switches (A1 safety guard)
+      meta: end_host
+      when: inventory_hostname not in ['D1', 'D2']
+
+    - name: Configure HSRPv2 for VLANs 67 and 69
+      ios_config:
+        parents:
+          - "interface Vlan{{ item.vlan }}"
+        lines:
+          - standby version 2
+          - standby {{ item.vlan }} ip {{ item.vip }}
+          - standby {{ item.vlan }} priority {{ priority }}
+          - standby {{ item.vlan }} preempt
+          - standby {{ item.group6 }} ipv6 autoconfig
+          - standby {{ item.group6 }} ipv6 priority {{ priority }}
+          - standby {{ item.group6 }} preempt
+      loop: "{{ hsrp_vlans }}"
+      vars:
+        priority: >-
+          {% if inventory_hostname == 'D1' and item.vlan == 67 %}110
+          {% elif inventory_hostname == 'D2' and item.vlan == 69 %}110
+          {% else %}90{% endif %}
+
+    - name: Verify HSRP status
+      ios_command:
+        commands:
+          - show standby brief
+      register: hsrp_status
+
+    - name: Display HSRP results
+      debug:
+        var: hsrp_status.stdout_lines

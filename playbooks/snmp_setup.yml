@@ -1,0 +1,25 @@
+---
+- name: Configure SNMP Monitoring
+  hosts: cisco
+  gather_facts: no
+
+  vars:
+    snmp_community: LABCOMMUNITY
+    snmp_server: 35.153.179.160
+
+  tasks:
+
+    - name: Configure SNMP read-only community
+      ios_config:
+        lines:
+          - snmp-server community {{ snmp_community }} RO
+
+    - name: Enable SNMP traps
+      ios_config:
+        lines:
+          - snmp-server enable traps
+
+    - name: Configure SNMP trap destination (AWS EC2)
+      ios_config:
+        lines:
+          - snmp-server host {{ snmp_server }} version 2c {{ snmp_community }}

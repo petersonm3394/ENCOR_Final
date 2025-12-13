@@ -1,0 +1,60 @@
+---
+- name: Switch Operational Verification
+  hosts: switches
+  gather_facts: no
+
+  tasks:
+
+    - name: Show EtherChannel summary (all switches)
+      ios_command:
+        commands:
+          - show etherchannel summary
+      register: etherchannel
+
+    - name: Display EtherChannel summary
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} EtherChannel Summary ====="
+          - "{{ etherchannel.stdout_lines }}"
+      when: etherchannel is defined
+
+    - name: Show trunk interfaces
+      ios_command:
+        commands:
+          - show interfaces trunk
+      register: trunk_info
+
+    - name: Display trunk interfaces
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} Trunk Interfaces ====="
+          - "{{ trunk_info.stdout_lines }}"
+      when: trunk_info is defined
+
+    - name: Show VLAN brief 
+      ios_command:
+        commands:
+          - show vlan brief
+      register: vlan_brief
+
+    - name: Display VLAN brief
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} VLAN Brief ====="
+          - "{{ vlan_brief.stdout_lines }}"
+      when: vlan_brief is defined
+
+    - name: Show HSRP status (D1 and D2 only)
+      ios_command:
+        commands:
+          - show standby brief
+      when: inventory_hostname in ['D1', 'D2']
+      register: hsrp_status
+
+    - name: Display HSRP status
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} HSRP Status ====="
+          - "{{ hsrp_status.stdout_lines }}"
+      when: hsrp_status is defined
+

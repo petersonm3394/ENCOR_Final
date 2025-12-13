@@ -1,0 +1,113 @@
+---
+- name: System Services & DHCP Verification
+  hosts: cisco
+  gather_facts: no
+
+  tasks:
+
+    - name: Show AAA configuration
+      ios_command:
+        commands:
+          - show running-config | include aaa
+      register: aaa_config
+
+    - name: Display AAA configuration
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} AAA Configuration ====="
+          - "{{ aaa_config.stdout_lines }}"
+      when: aaa_config is defined
+
+    - name: Show AAA server status
+      ios_command:
+        commands:
+          - show aaa servers
+      register: aaa_servers
+
+    - name: Display AAA server status
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} AAA Server Status ====="
+          - "{{ aaa_servers.stdout_lines }}"
+      when: aaa_servers is defined
+
+    - name: Show syslog configuration
+      ios_command:
+        commands:
+          - show logging
+      register: syslog_info
+
+    - name: Display syslog configuration
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} Syslog Configuration ====="
+          - "{{ syslog_info.stdout_lines }}"
+      when: syslog_info is defined
+
+    - name: Show NTP associations
+      ios_command:
+        commands:
+          - show ntp associations
+      register: ntp_assoc
+
+    - name: Display NTP associations
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} NTP Associations ====="
+          - "{{ ntp_assoc.stdout_lines }}"
+      when: ntp_assoc is defined
+
+    - name: Show NTP status (routers only)
+      ios_command:
+        commands:
+          - show ntp status
+      when: "'routers' in group_names"
+      register: ntp_status
+
+    - name: Display NTP status
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} NTP Status ====="
+          - "{{ ntp_status.stdout_lines }}"
+      when: ntp_status is defined
+
+    - name: Show DHCP bindings (D1 and D2 only)
+      ios_command:
+        commands:
+          - show ip dhcp binding
+      when: inventory_hostname in ['D1', 'D2']
+      register: dhcp_bindings
+
+    - name: Display DHCP bindings
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} DHCP Bindings ====="
+          - "{{ dhcp_bindings.stdout_lines }}"
+      when: dhcp_bindings is defined
+    - name: Show SNMP configuration (routers only)
+      ios_command:
+        commands:
+          - show snmp
+      when: "'routers' in group_names"
+      register: snmp_info
+
+    - name: Display SNMP configuration
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} SNMP Configuration ====="
+          - "{{ snmp_info.stdout_lines }}"
+      when: snmp_info is defined
+
+    - name: Show SNMP hosts (routers only)
+      ios_command:
+        commands:
+          - show snmp host
+      when: "'routers' in group_names"
+      register: snmp_hosts
+
+    - name: Display SNMP hosts
+      debug:
+        msg:
+          - "===== {{ inventory_hostname }} SNMP Hosts ====="
+          - "{{ snmp_hosts.stdout_lines }}"
+      when: snmp_hosts is defined
