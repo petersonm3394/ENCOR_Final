@@ -1,0 +1,52 @@
+## ⚠️ WARNING: IP SLA SCRIPT CAN DISRUPT THE NETWORK
+
+This repository contains an **IP SLA automation script that is intentionally disruptive by design**.
+
+If executed incorrectly, this IP SLA script may:
+- Force unintended routing changes
+- Trigger failover events unexpectedly
+- Cause traffic to oscillate between paths
+- Disrupt active network sessions
+- Break upstream or downstream connectivity
+- Create instability due to aggressive tracking or timers
+
+Because IP SLA directly influences routing decisions, **misconfiguration or improper execution can lead to widespread network impact**.
+
+---
+
+## ❗ Intended Use of the IP SLA Script
+
+The IP SLA script is intended **only** for:
+- Controlled lab environments
+- Failure simulation and testing
+- Demonstrating the impact of dynamic path tracking
+- Validating redundancy and recovery behavior
+
+It must **never** be run on:
+- Production networks
+- Shared environments without approval
+- Networks without console access or rollback plans
+
+---
+
+## 🔒 Safety Requirements Before Running IP SLA
+
+Before executing the IP SLA script:
+
+- ✅ You fully understand the IP SLA operation and tracking logic
+- ✅ You understand how routing decisions depend on IP SLA results
+- ✅ You have console access or a verified local fallback user
+- ✅ Routing configurations are backed up
+- ✅ You are prepared to manually recover from a failure
+
+If these conditions are not met, **DO NOT RUN THE IP SLA SCRIPT**.
+
+---
+
+## 🧠 Final Note on IP SLA
+
+IP SLA is a powerful tool that directly affects network stability.
+
+> **When combined with automation, IP SLA can rapidly amplify configuration mistakes.**
+
+Use with caution.
