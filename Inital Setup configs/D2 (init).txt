@@ -29,13 +29,13 @@ vlan 99
 
 ip dhcp pool VLAN67-D2
  network 192.168.67.0 255.255.255.0
- default-router 192.168.67.2
+ default-router 192.168.67.254
  dns-server 8.8.8.8
  lease 8
 
 ip dhcp pool VLAN69-D2
  network 192.168.69.0 255.255.255.0
- default-router 192.168.69.2
+ default-router 192.168.69.254
  dns-server 8.8.8.8
  lease 8
 
@@ -139,3 +139,4 @@ line vty 0 15
  logging synchronous
  login local
  transport input ssh
+
