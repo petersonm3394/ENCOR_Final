@@ -48,7 +48,9 @@ In Grafana:
 ## 4) Verify logs in Explore (Loki queries)
 
 Grafana → **Explore** → choose **Loki**.
+
 Be sure to select "code" rather then builder (Red Circle)
+
 ![Be sure to select "code" rather then builder in red](image.png)
 
 ### A) Cisco syslog (all)
