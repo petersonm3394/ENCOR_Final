@@ -1,0 +1,219 @@
+
+!
+! Last configuration change at 17:57:09 UTC Sun Dec 14 2025
+! NVRAM config last updated at 17:57:14 UTC Sun Dec 14 2025
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+service sequence-numbers
+!
+hostname A1
+!
+boot-start-marker
+boot-end-marker
+!
+logging buffered 16384 informational
+enable secret 5 $1$JzUE$8aI8Lfj5SgvunVxzDOeSI.
+!
+username cisco privilege 15 secret 5 $1$pbGw$dpoH271LCPEP4V3FLk7pW0
+aaa new-model
+!
+!
+aaa authentication login VTY_AUTH group radius local
+aaa authorization exec VTY_AUTH group radius local 
+!
+!
+!
+!
+!
+!
+aaa session-id common
+system mtu routing 1500
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip domain-name cnit441
+!
+!
+crypto pki trustpoint TP-self-signed-2815058048
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2815058048
+ revocation-check none
+ rsakeypair TP-self-signed-2815058048
+!
+!
+crypto pki certificate chain TP-self-signed-2815058048
+ certificate self-signed 01 nvram:IOS-Self-Sig#19.cer
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+interface Port-channel2
+ description Po1-To-D1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+!
+interface Port-channel3
+ description Po2-To-D2
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+!
+interface FastEthernet0/1
+ description LACP-Uplink-to-D1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 2 mode active
+!
+interface FastEthernet0/2
+ description LACP-Uplink-to-D1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 2 mode active
+!
+interface FastEthernet0/3
+ description LACP-Uplink-to-D2
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 3 mode active
+!
+interface FastEthernet0/4
+ description LACP-Uplink-to-D2
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 3 mode active
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+ description Ansible-Node
+ switchport access vlan 67
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/24
+ switchport access vlan 69
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan99
+ ip address 192.168.99.3 255.255.255.0
+!
+ip http server
+ip http secure-server
+ip tftp source-interface Vlan99
+ip ssh version 2
+!
+ip radius source-interface Vlan99 
+logging source-interface Vlan99
+logging host 192.168.67.15
+!
+snmp-server community LABCOMMUNITY RO
+snmp-server source-interface informs Vlan99
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps transceiver all
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps cluster
+snmp-server enable traps entity
+snmp-server enable traps cpu threshold
+snmp-server enable traps vtp
+snmp-server enable traps vlancreate
+snmp-server enable traps vlandelete
+snmp-server enable traps flash insertion removal
+snmp-server enable traps port-security
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps envmon fan shutdown supply temperature status
+snmp-server enable traps energywise
+snmp-server enable traps power-ethernet police
+snmp-server enable traps fru-ctrl
+snmp-server enable traps event-manager
+snmp-server enable traps trustsec-sxp conn-srcaddr-err msg-parse-err conn-config-err binding-err conn-up conn-down binding-expn-fail oper-nodeid-change binding-conflict
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps vstack
+snmp-server enable traps bridge newroot topologychange
+snmp-server enable traps stpx inconsistency root-inconsistency loop-inconsistency
+snmp-server enable traps syslog
+snmp-server enable traps mac-notification change move threshold
+snmp-server enable traps vlan-membership
+snmp-server enable traps errdisable
+snmp-server enable traps bulkstat collection transfer
+snmp-server host 192.168.67.15 version 2c LABCOMMUNITY 
+!
+radius server RADIUS-SRV
+ address ipv4 192.168.67.15 auth-port 1812 acct-port 1813
+ key 7 094F471A1A0A464058
+!
+!
+no vstack
+!
+line con 0
+line vty 0 4
+ logging synchronous
+ login authentication VTY_AUTH
+ transport input ssh
+line vty 5 15
+ logging synchronous
+ login authentication VTY_AUTH
+ transport input ssh
+!
+ntp server 172.16.12.2
+end

@@ -1,0 +1,232 @@
+*Feb 28 23:47:32.325 CST: %SYS-5-CONFIG_I: Configured from console by console
+Current configuration : 6285 bytes
+!
+! Last configuration change at 23:47:32 CST Sun Feb 28 1993
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname A1
+!
+boot-start-marker
+boot-end-marker
+!
+logging buffered 16384 informational
+enable secret 5 $1$OLd.$0mlM8Ynk4Ilp70xz3dQqY1
+!
+username cisco privilege 15 secret 5 $1$Z08I$mRoSi8SolmaOp3nUuAdxG1
+no aaa new-model
+clock timezone CST -6 0
+system mtu routing 1500
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip domain-name cnit441
+!
+!
+crypto pki trustpoint TP-self-signed-2815058048
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2815058048
+ revocation-check none
+ rsakeypair TP-self-signed-2815058048
+!
+!
+crypto pki certificate chain TP-self-signed-2815058048
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 32383135 30353830 3438301E 170D3933 30333031 30303030
+  35375A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D32 38313530
+  35383034 3830819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  8100BDD7 7B46D971 756394D6 C27A24EB E17E6EA8 4070858E 3F3E52E9 5FE60938
+  3875746E 6D08D422 78983DA7 B21CEA85 64A33911 7389E804 2DCE752A 59906312
+  7E732611 9DABAB6D 5B4D48C0 454D6749 EB2C6935 34979589 8868B719 00D26C31
+  2BFDCFD6 45010266 3B5740B0 52361E29 298B3952 B7F6C03B 00CE835F 31172F40
+  86F90203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603
+  551D2304 18301680 14895B09 9C3CC6BC A5FFB3B6 98194E1F 261058A2 65301D06
+  03551D0E 04160414 895B099C 3CC6BCA5 FFB3B698 194E1F26 1058A265 300D0609
+  2A864886 F70D0101 05050003 818100B5 8A30482D F1727480 C17169DD 786B0773
+  F8D92374 1D4C9594 7FA7F029 F30B993A 236BF15F AE1849D6 CD9FD9F9 9B2DEFB9
+  91742D81 24961B40 7C7582F0 658E26E6 8B8EB0CA 5DAEA427 D6E05254 30DCC08D
+  4981EA7E 5E0590B6 74ECE5A6 6E0123AC 0A80AF78 384B8BD0 36DD81A4 A66CE2E9
+  58C81F92 37AD94BD 54816835 D408CC
+        quit
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+interface Port-channel2
+ description Po2-To-D2
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+!
+interface Port-channel3
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ shutdown
+!
+interface FastEthernet0/1
+ description LACP-Uplink-to-D1
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 2 mode active
+!
+interface FastEthernet0/2
+ description LACP-Uplink-to-D1
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 2 mode active
+!
+interface FastEthernet0/3
+ description LACP-Uplink-to-D2
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ shutdown
+ channel-group 3 mode active
+!
+interface FastEthernet0/4
+ description LACP-Uplink-to-D2
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ shutdown
+ channel-group 3 mode active
+!
+interface FastEthernet0/5
+!
+interface FastEthernet0/6
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface FastEthernet0/13
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+ description Ansible-Node
+ switchport access vlan 67
+ switchport mode access
+ spanning-tree portfast
+!
+interface FastEthernet0/24
+ switchport access vlan 69
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan99
+ ip address 192.168.99.3 255.255.255.0
+ ipv6 address FE80::A1:1 link-local
+ ipv6 address 2001:DB8:ACAD:99::3/64
+!
+ip default-gateway 192.168.99.254
+ip http server
+ip http secure-server
+ip ssh version 2
+!
+logging source-interface Vlan99
+logging host 192.168.67.100
+!
+snmp-server community LABCOMMUNITY RO
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps transceiver all
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps cluster
+snmp-server enable traps entity
+snmp-server enable traps cpu threshold
+snmp-server enable traps vtp
+snmp-server enable traps vlancreate
+snmp-server enable traps vlandelete
+snmp-server enable traps flash insertion removal
+snmp-server enable traps port-security
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps envmon fan shutdown supply temperature status
+snmp-server enable traps energywise
+snmp-server enable traps power-ethernet police
+snmp-server enable traps fru-ctrl
+snmp-server enable traps event-manager
+snmp-server enable traps trustsec-sxp conn-srcaddr-err msg-parse-err conn-config-err binding-err conn-up conn-down binding-expn-fail oper-nodeid-change binding-conflict
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps vstack
+snmp-server enable traps bridge newroot topologychange
+snmp-server enable traps stpx inconsistency root-inconsistency loop-inconsistency
+snmp-server enable traps syslog
+snmp-server enable traps mac-notification change move threshold
+snmp-server enable traps vlan-membership
+snmp-server enable traps errdisable
+snmp-server enable traps bulkstat collection transfer
+snmp-server host 192.168.67.100 version 2c LABCOMMUNITY
+no vstack
+banner motd ^CUnauthorized access is prohibited!^C
+!
+line con 0
+line vty 0 4
+ logging synchronous
+ login local
+ transport input ssh
+line vty 5 15
+ logging synchronous
+ login local
+ transport input ssh
+!
+ntp server time.google.com
+ntp server time.cloudflare.com
+end
+
