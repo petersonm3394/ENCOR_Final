@@ -61,7 +61,6 @@
       ios_command:
         commands:
           - show ntp status
-      when: "'routers' in group_names"
       register: ntp_status
 
     - name: Display NTP status
@@ -83,7 +82,7 @@
         msg:
           - "===== {{ inventory_hostname }} DHCP Bindings ====="
           - "{{ dhcp_bindings.stdout_lines }}"
-      when: dhcp_bindings is defined
+      when: inventory_hostname in ['D1', 'D2']
     - name: Show SNMP configuration 
       ios_command:
         commands:

@@ -9,21 +9,21 @@
       ios_command:
         commands:
           - show ip route ospf
-      when: inventory_hostname != 'A1'
+      when: inventory_hostname not in ['A1', 'R2']
       register: ospf_ipv4
 
     - name: Show IPv6 OSPF learned routes
       ios_command:
         commands:
           - show ipv6 route ospf
-      when: inventory_hostname != 'A1'
+      when: inventory_hostname not in ['A1', 'R2']
       register: ospf_ipv6
 
     - name: Show IPv6 OSPF neighbors
       ios_command:
         commands:
           - show ipv6 ospf neighbor
-      when: inventory_hostname != 'A1'
+      when: inventory_hostname not in ['A1', 'R2']
       register: ospf6_neighbors
 
     - name: Show BGP summary (routers only)
@@ -45,32 +45,32 @@
         msg:
           - "===== {{ inventory_hostname }} IPv4 OSPF Routes ====="
           - "{{ ospf_ipv4.stdout_lines }}"
-      when: ospf_ipv4 is defined
+      when: inventory_hostname not in ['A1', 'R2']
 
     - name: Display IPv6 OSPF routes
       debug:
         msg:
           - "===== {{ inventory_hostname }} IPv6 OSPF Routes ====="
           - "{{ ospf_ipv6.stdout_lines }}"
-      when: ospf_ipv6 is defined
+      when: inventory_hostname not in ['A1', 'R2']
 
     - name: Display IPv6 OSPF neighbors
       debug:
         msg:
           - "===== {{ inventory_hostname }} IPv6 OSPF Neighbors ====="
           - "{{ ospf6_neighbors.stdout_lines }}"
-      when: ospf6_neighbors is defined
+      when: inventory_hostname not in ['A1', 'R2']
 
     - name: Display BGP summary
       debug:
         msg:
           - "===== {{ inventory_hostname }} BGP Summary ====="
           - "{{ bgp_summary.stdout_lines }}"
-      when: bgp_summary is defined
+      when: "'routers' in group_names"
 
     - name: Display BGP routes
       debug:
         msg:
           - "===== {{ inventory_hostname }} BGP Routes ====="
           - "{{ bgp_routes.stdout_lines }}"
-      when: bgp_routes is defined
+      when: "'routers' in group_names"

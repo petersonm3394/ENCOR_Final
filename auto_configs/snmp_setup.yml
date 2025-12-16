@@ -5,7 +5,7 @@
 
   vars:
     snmp_community: LABCOMMUNITY
-    snmp_server: 35.153.179.160
+    snmp_server: 192.168.67.100
 
   tasks:
 

@@ -7,7 +7,7 @@
     ntp_servers:
       - time.google.com
       - time.cloudflare.com
-    timezone: UTC
+    timezone: CST
 
   tasks:
 
@@ -19,16 +19,9 @@
     - name: Configure timezone
       ios_config:
         lines:
-          - "clock timezone {{ timezone }} 0"
+          - "clock timezone {{ timezone }} -6"
 
     - name: Configure MOTD banner
       ios_config:
         lines:
-          - |
-            banner motd ^
-            ****************************************************
-            *  Authorized Access Only                          *
-            *  CNIT 441 – Enterprise Network Project            *
-            *  All activity is monitored and logged             *
-            ****************************************************
-            ^
+          - "banner motd #Unauthorized access is prohibited!#"

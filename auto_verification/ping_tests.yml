@@ -9,8 +9,19 @@
         ip: 192.168.67.254
       - name: VLAN69 Gateway
         ip: 192.168.69.254
+      - name: VLAN99 Gateway
+        ip: 192.168.99.254
       - name: ISP Loopback
         ip: 21.25.67.69
+      - name: AWS EC2
+        ip: 54.91.226.48
+      - name: Chris PC
+        ip: 192.168.69.11
+      - name: AAA_server/syslog
+        ip: 192.168.67.13
+      - name: ISP
+        ip: 192.168.1.1
+        
 
   tasks:
 

@@ -4,7 +4,7 @@
   gather_facts: no
 
   vars:
-    syslog_server: 35.153.179.160
+    syslog_server: 192.168.67.100
     syslog_port: 514
 
   tasks:
@@ -29,7 +29,7 @@
     - name: Set syslog source interface (R2 ISP router)
       ios_config:
         lines:
-          - logging source-interface GigabitEthernet0/0/0
+          - logging source-interface Serial0/1/0
       when: inventory_hostname == 'R2'
 
     - name: Configure remote syslog server (AWS EC2)

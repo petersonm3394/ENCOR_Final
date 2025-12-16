@@ -1,0 +1,59 @@
+---
+- name: Monitoring setup (SNMP + Syslog everywhere, NetFlow on routers only)
+  hosts: cisco
+  gather_facts: no
+
+  vars:
+    ntop_ip: 192.168.67.100
+    snmp_community: LABCOMMUNITY
+    syslog_port: 514
+    netflow_port: 2055
+    log_level: informational
+    syslog_source_int: Vlan99
+
+  tasks:
+    # ----------------------------
+    # SNMP (all devices)
+    # ----------------------------
+    - name: Configure SNMP (community, traps, host)
+      cisco.ios.ios_config:
+        lines:
+          - "snmp-server community {{ snmp_community }} RO"
+          - "snmp-server enable traps"
+          - "snmp-server host {{ ntop_ip }} version 2c {{ snmp_community }}"
+
+    # ----------------------------
+    # SYSLOG (all devices)
+    # ----------------------------
+    - name: Configure Syslog timestamps
+      cisco.ios.ios_config:
+        lines:
+          - "service timestamps log datetime msec localtime show-timezone"
+
+    - name: Configure Syslog server + levels
+      cisco.ios.ios_config:
+        lines:
+          - "logging source-interface {{ syslog_source_int }}"
+          - "logging host {{ ntop_ip }} transport udp port {{ syslog_port }}"
+          - "logging trap {{ log_level }}"
+          - "logging buffered 16384 {{ log_level }}"
+
+    # ----------------------------
+    # NETFLOW (routers only)
+    # ----------------------------
+    - name: Configure NetFlow export (routers only)
+      cisco.ios.ios_config:
+        lines:
+          - "ip flow-export destination {{ ntop_ip }} {{ netflow_port }}"
+          - "ip flow-export version 9"
+          - "ip flow-cache timeout active 1"
+      when: inventory_hostname in ['R1', 'R2', 'R3']
+
+    - name: Enable NetFlow on router inside interfaces (routers only)
+      cisco.ios.ios_config:
+        parents:
+          - "interface GigabitEthernet0/0/1"
+        lines:
+          - "ip flow ingress"
+          - "ip flow egress"
+      when: inventory_hostname in ['R1', 'R3']

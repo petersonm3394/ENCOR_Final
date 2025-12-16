@@ -16,7 +16,7 @@
         msg:
           - "===== {{ inventory_hostname }} EtherChannel Summary ====="
           - "{{ etherchannel.stdout_lines }}"
-      when: etherchannel is defined
+      when: inventory_hostname != 'A1'
 
     - name: Show trunk interfaces
       ios_command:
@@ -56,5 +56,5 @@
         msg:
           - "===== {{ inventory_hostname }} HSRP Status ====="
           - "{{ hsrp_status.stdout_lines }}"
-      when: hsrp_status is defined
+      when: inventory_hostname in ['D1', 'D2']
 

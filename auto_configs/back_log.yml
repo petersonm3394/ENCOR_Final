@@ -1,0 +1,34 @@
+---
+- name: Configure Syslog Logging to On-Prem ntopng Server
+  hosts: cisco
+  gather_facts: no
+
+  vars:
+    syslog_server: 192.168.67.100
+    log_level: informational
+    buffer_size: 16384
+
+  tasks:
+
+    - name: Enable detailed log timestamps
+      ios_config:
+        lines:
+          - service timestamps log datetime msec localtime show-timezone
+
+    - name: Configure syslog for switches (use VLAN 99)
+      ios_config:
+        lines:
+          - logging source-interface Vlan99
+          - logging host {{ syslog_server }}
+          - logging trap {{ log_level }}
+          - logging buffered {{ buffer_size }} {{ log_level }}
+      when: inventory_hostname in ['D1', 'D2', 'A1']
+
+    - name: Configure syslog for routers (use LAN-facing interface)
+      ios_config:
+        lines:
+          - logging source-interface GigabitEthernet0/0/1
+          - logging host {{ syslog_server }}
+          - logging trap {{ log_level }}
+          - logging buffered {{ buffer_size }} {{ log_level }}
+      when: inventory_hostname in ['R1', 'R3']
