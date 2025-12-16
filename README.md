@@ -1,4 +1,4 @@
-# CNIT 441 – Enterprise Network Design & Automation Project
+# CNIT 441 – Enterprise Network Design, Automation & AWS Project
 
 ## Project Overview
 
