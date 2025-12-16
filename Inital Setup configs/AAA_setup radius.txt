@@ -1,0 +1,21 @@
+conf t
+aaa new-model
+
+radius server RADIUS-SRV
+ address ipv4 192.168.67.13 auth-port 1812 acct-port 1813
+ key cisco123
+
+aaa authentication login VTY_AUTH group radius local
+aaa authorization exec VTY_AUTH group radius local
+
+ip radius source-interface vlan99
+
+line vty 0 15
+ login authentication VTY_AUTH
+ transport input ssh
+
+line con 0
+ login local
+end
+
+router have line vty 0 4

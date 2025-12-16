@@ -1,0 +1,46 @@
+
+
+
+! syslog
+! routers
+
+! ALL SWITCHES vlan99 (management) for source
+! R1 & R3 g0/0/1 (internal downlink to multilayer switches
+! R2 s0/1/0 or s0/1/1 or lo0 
+! ec2 public ip could change
+
+
+service timestamps log datetime msec localtime show-timezone
+service sequence-numbers
+
+logging source-interface g0/0/1
+logging host 54.91.226.48 transport udp port 514
+logging trap informational
+logging buffered 16384 informational
+
+snmp-server community LABCOMMUNITY RO
+snmp-server enable traps
+snmp-server enable traps snmp linkdown linkup
+snmp-server host 54.91.226.48 version 2c LABCOMMUNITY
+snmp-server trap-source g0/0/1
+snmp-server source-interface informs g0/0/1
+
+
+! switches 
+
+service timestamps log datetime msec localtime show-timezone
+service sequence-numbers
+
+logging source-interface Vlan99
+logging host 54.91.226.48 transport udp port 514
+logging trap informational
+logging buffered 16384 informational
+
+snmp-server community LABCOMMUNITY RO
+snmp-server enable traps
+snmp-server host 54.91.226.48 version 2c LABCOMMUNITY
+snmp-server trap-source Vlan99
+snmp-server source-interface informs Vlan99
+
+
+

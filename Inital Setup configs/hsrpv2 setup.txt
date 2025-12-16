@@ -1,0 +1,59 @@
+! active
+!D1: 21,67
+!D2: 69,99
+
+! standby
+!D1: 69,99
+!D2: 21,67
+!||D1
+int vlan 67
+standby version 2
+standby 67 ip 192.168.67.254
+standby 67 pri 150
+standby 67 preempt
+standby 167 ipv6 auto
+standby 167 pri 150
+standby 167 pre
+
+int vlan 69
+standby version 2
+standby 69 ip 192.168.69.254
+standby 69 pre
+standby 169 ipv6 auto
+standby 169 pre
+
+int vlan 99
+standby version 2
+standby 99 ip 192.168.99.254
+standby 99 pre
+standby 199 ipv6 auto
+standby 199 pre
+
+
+!||D2
+int vlan 67
+standby version 2
+standby 67 ip 192.168.67.254
+standby 67 preempt
+standby 167 ipv6 auto
+standby 167 pre
+
+int vlan 69
+standby version 2
+standby 69 ip 192.168.69.254
+standby 69 pri 150
+standby 69 pre
+standby 169 ipv6 auto
+standby 169 pri 150
+standby 169 pre
+
+int vlan 99
+standby version 2
+standby 99 ip 192.168.99.254
+standby 99 pri 150
+standby 99 pre
+standby 199 ipv6 auto
+standby 199 pri 150
+standby 199 pre
+
+

@@ -1,0 +1,15 @@
+! NTP SETUP
+
+! R2 as master
+
+
+
+conf t
+ ntp master 3
+ clock timezone CST -6
+end
+ 
+! All other devices: A1, D1, D2, R1 & R3
+
+clock timezone CST -6
+ntp server 172.16.12.2

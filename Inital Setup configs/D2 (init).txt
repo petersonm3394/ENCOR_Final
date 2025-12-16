@@ -1,0 +1,141 @@
+
+! remember to no shut g0/0/11 int
+hostname D2
+service password-encryption
+ip routing
+ipv6 unicast-routing
+no ip domain-lookup
+ip domain name cnit441
+ip ssh version 2
+crypto key generate rsa modulus 2048
+username cisco privilege 15 secret cisco
+enable secret cisco
+clock timezone CST -6
+ntp server 172.16.12.2
+
+ip dhcp excluded-address 192.168.67.1 192.168.67.150
+ip dhcp excluded-address 192.168.67.251 192.168.67.254
+ip dhcp excluded-address 192.168.69.1 192.168.69.150
+ip dhcp excluded-address 192.168.69.251 192.168.69.254
+
+vlan 21
+ name Transit
+vlan 67
+ name HQ
+vlan 69
+ name RESEARCH
+vlan 99
+ name MGMT
+
+ip dhcp pool VLAN67-D2
+ network 192.168.67.0 255.255.255.0
+ default-router 192.168.67.2
+ dns-server 8.8.8.8
+ lease 8
+
+ip dhcp pool VLAN69-D2
+ network 192.168.69.0 255.255.255.0
+ default-router 192.168.69.2
+ dns-server 8.8.8.8
+ lease 8
+
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+spanning-tree vlan 21,67 root secondary
+spanning-tree vlan 69,99 root primary
+
+interface Port-channel1
+ description Po1-To-D1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+
+interface Port-channel3
+ description Po3-To-A1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+
+interface GigabitEthernet1/0/1
+ description LACP-To-D1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 1 mode active
+
+interface GigabitEthernet1/0/2
+ description LACP-To-D1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 1 mode active
+
+interface GigabitEthernet1/0/3
+ description LACP-To-D1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 1 mode active
+
+interface GigabitEthernet1/0/4
+ description LACP-To-D1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 1 mode active
+
+interface GigabitEthernet1/0/5
+ description LACP-To-A1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 3 mode active
+
+interface GigabitEthernet1/0/6
+ description LACP-To-A1
+ switchport trunk allowed vlan 21,67,69,99
+ switchport mode trunk
+ channel-group 3 mode active
+
+interface GigabitEthernet1/0/11
+ description Uplink-to-R3
+ no switchport
+ ip address 172.16.3.2 255.255.255.0
+ ipv6 address FE80::D2:1 link-local
+ ipv6 address 2001:DB8:ACAD:1723::2/64
+ ipv6 ospf 1 area 0
+
+
+interface Vlan1
+ no ip address
+ shutdown
+
+interface Vlan67
+ ip address 192.168.67.2 255.255.255.0
+ ipv6 address FE80::D2:2 link-local
+ ipv6 address 2001:DB8:ACAD:67::2/64
+ ipv6 ospf 1 area 0
+ 
+ 
+
+interface Vlan69
+ ip address 192.168.69.2 255.255.255.0
+ ipv6 address FE80::D2:3 link-local
+ ipv6 address 2001:DB8:ACAD:69::2/64
+ ipv6 ospf 1 area 0
+
+interface Vlan99
+ ip address 192.168.99.2 255.255.255.0
+ ipv6 address FE80::D2:4 link-local
+ ipv6 address 2001:DB8:ACAD:99::2/64
+ ipv6 ospf 1 area 0
+
+router ospf 1
+ router-id 4.4.4.4
+ network 172.16.3.0 0.0.0.255 area 0
+ network 192.168.67.0 0.0.0.255 area 0
+ network 192.168.69.0 0.0.0.255 area 0
+ network 192.168.99.0 0.0.0.255 area 0
+
+ipv6 router ospf 1
+ router-id 4.4.4.4
+
+ip tftp source-interface Vlan99
+
+line vty 0 15
+ logging synchronous
+ login local
+ transport input ssh
