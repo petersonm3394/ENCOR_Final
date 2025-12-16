@@ -22,7 +22,7 @@ Login:
 - Username: `admin`
 - Password: `ChangeMe123` (unless you changed `GF_SECURITY_ADMIN_PASSWORD`)
 
-You will be prompted to set a new password on first login.
+
 
 ---
 
@@ -48,6 +48,7 @@ In Grafana:
 ## 4) Verify logs in Explore (Loki queries)
 
 Grafana → **Explore** → choose **Loki**.
+![Be sure to select "code" rather then builder in red](image.png)
 
 ### A) Cisco syslog (all)
 ```logql
